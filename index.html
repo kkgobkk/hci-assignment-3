@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniCrowd - University Crowdfunding Platform</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="header-root" class="site-header"></header>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main id="main-root"></main>
+
+  <!-- FOOTER -->
+  <footer id="footer-root" class="site-footer"></footer>
+
+  <!-- APPLICATION JAVASCRIPT -->
+  <script>
+    // --- SVG ICONS LIBRARY ---
+    const ICONS = {
+      bookOpen: '<svg class="icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+      trophy: '<svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',
+      mapPin: '<svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+      cpu: '<svg class="icon" viewBox="0 0 24 24"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>',
+      award: '<svg class="icon icon-sm" style="color:#e2a8ab" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
+      search: '<svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+      rocket: '<svg class="icon" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+      arrowRight: '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+      chevronLeft: '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>',
+      shieldCheck: '<svg class="icon icon-sm" style="color:#059669" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+      shieldCheckLg: '<svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+      dollarSign: '<svg class="icon" style="color:#a5313a" viewBox="0 0 24 24"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+      users: '<svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      download: '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
+      smartphone: '<svg class="icon" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>',
+      landmark: '<svg class="icon" style="color:#a5313a" viewBox="0 0 24 24"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>',
+      building2: '<svg class="icon" style="color:#9333ea" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>',
+      copy: '<svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+      checkCircle: '<svg class="icon icon-xl" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      share2: '<svg class="icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>',
+      info: '<svg class="icon" style="color:#3b82f6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+      helpCircle: '<svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>',
+      sun: '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+      moon: '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
+      menu: '<svg class="icon" viewBox="0 0 24 24"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>',
+      x: '<svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>'
+    };
+
+    // --- MOCK DATA FOR PROJECTS ---
+    const PROJECTS_DATA = [
+      {
+        id: 'study-room',
+        title: {
+          it: 'Aula Studio Campus 24/7 Sostenibile e Inclusiva',
+          en: 'Sustainable & Inclusive 24/7 Campus Study Space'
+        },
+        category: { it: 'Vita Studentesca', en: 'Campus Life' },
+        icon: ICONS.bookOpen,
+        tags: ['Campus H24', 'Design Inclusivo'],
+        bannerImg: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
+        shortDesc: {
+          it: 'Creazione di uno spazio studio autogestito dagli studenti, aperto giorno e notte, con arredi rigenerati.',
+          en: 'Creation of a 24/7 self-managed study space with recycled furniture and secure access.'
+        },
+        fullDesc: {
+          it: 'L’Aula Studio 24/7 risponde al bisogno essenziale di spazi per lo studio serale e notturno in sicurezza. Il progetto prevede l’allestimento con arredi certificati ecosostenibili, sistema di badge elettronico e torrette di ricarica ad alimentazione solare per i dispositivi degli studenti.',
+          en: 'The 24/7 Study Hall fulfills the crucial need for safe night study spaces. Equipped with eco-friendly furniture, electronic access badges, and solar charging towers for student devices, creating a safe hub for late-night learners.'
+        },
+        goal: 8000,
+        raised: 6400,
+        backers: 310,
+        daysLeft: 5,
+        matchedFunding: true,
+        team: [
+          { name: 'Associazione Studentesca', role: { it: 'Rappresentanti degli Studenti', en: 'Student Representatives' } }
+        ],
+        budgetBreakdown: [
+          { name: { it: 'Arredi Riciclati', en: 'Recycled Furniture' }, percentage: 50, color: 'bg-blue-600' },
+          { name: { it: 'Sicurezza & Badge', en: 'Security & Badges' }, percentage: 30, color: 'bg-red-600' },
+          { name: { it: 'Ricarica Solare', en: 'Solar Charging' }, percentage: 20, color: 'bg-emerald-500' }
+        ],
+        rewards: [
+          { id: 1, amount: 5, title: { it: 'Ringraziamento Digitale', en: 'Digital Shoutout' } },
+          { id: 2, amount: 15, title: { it: 'Borraccia UniTO', en: 'UniTO Flask' } }
+        ]
+      },
+      {
+        id: 'sports-team',
+        title: {
+          it: 'Trasferta Europea Squadra Sportiva Universitaria',
+          en: 'University Sports Team European Tournament'
+        },
+        category: { it: 'Sport Universitario', en: 'University Sports' },
+        icon: ICONS.trophy,
+        tags: ['Sport', 'Competizione Internazionale'],
+        bannerImg: 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1200&q=80',
+        shortDesc: {
+          it: 'Supporta i nostri atleti universitari per la partecipazione al campionato europeo universitario a Madrid.',
+          en: 'Support our university athletes in participating in the European University Championship in Madrid.'
+        },
+        fullDesc: {
+          it: 'La nostra squadra universitaria si è qualificata per le finali europee! I fondi copriranno le spese di viaggio, l\'alloggio per i 15 atleti e l\'iscrizione ufficiale al torneo. Aiutaci a portare i colori del nostro Ateneo sul gradino più alto del podio internazionale.',
+          en: 'Our university team has qualified for the European finals! Funds will cover travel expenses, accommodation for the 15 athletes, and official tournament registration fees. Help us bring our University colors to the top of the international podium.'
+        },
+        goal: 5000,
+        raised: 2100,
+        backers: 85,
+        daysLeft: 12,
+        matchedFunding: false,
+        team: [
+          { name: 'Centro Sportivo Universitario', role: { it: 'Allenatori e Direttivo', en: 'Coaches and Board' } }
+        ],
+        budgetBreakdown: [
+          { name: { it: 'Volo e Trasporti', en: 'Flights & Transport' }, percentage: 45, color: 'bg-blue-600' },
+          { name: { it: 'Alloggio (5 Notti)', en: 'Accommodation' }, percentage: 35, color: 'bg-amber-500' },
+          { name: { it: 'Quota Iscrizione', en: 'Registration Fee' }, percentage: 20, color: 'bg-purple-500' }
+        ],
+        rewards: [
+          { id: 1, amount: 10, title: { it: 'Video Saluto da Madrid', en: 'Video Greeting from Madrid' } },
+          { id: 2, amount: 30, title: { it: 'Maglia Ufficiale Team', en: 'Official Team Jersey' } }
+        ]
+      },
+      {
+        id: 'green-park',
+        title: {
+          it: 'Riqualificazione Orto Botanico per il Quartiere',
+          en: 'Botanical Garden Renewal for the Local Community'
+        },
+        category: { it: 'Impatto Locale', en: 'Local Community' },
+        icon: ICONS.mapPin,
+        tags: ['Verde Urbano', 'Inclusione'],
+        bannerImg: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1200&q=80',
+        shortDesc: {
+          it: 'Creazione di percorsi sensoriali per ipovedenti e nuove aree relax aperte a tutti i cittadini del quartiere.',
+          en: 'Creation of sensory paths for the visually impaired and new relax areas open to all local citizens.'
+        },
+        fullDesc: {
+          it: 'Un intervento concreto per la biodiversità urbana. Il progetto trasformerà un\'area chiusa dell\'Orto Botanico universitario in uno spazio accessibile alla cittadinanza, con tappe didattiche, flora protetta e percorsi tattili-olfattivi progettati per l\'inclusività.',
+          en: 'A tangible urban biodiversity intervention. Transforming a closed area of the university Botanical Garden into an inclusive space for citizens, featuring educational stops, protected flora, and tactile-olfactory paths designed for accessibility.'
+        },
+        goal: 12000,
+        raised: 11500,
+        backers: 210,
+        daysLeft: 3,
+        matchedFunding: true,
+        team: [
+          { name: 'Dipartimento di Scienze della Terra', role: { it: 'Ricercatori e Docenti', en: 'Researchers and Faculty' } }
+        ],
+        budgetBreakdown: [
+          { name: { it: 'Alberi e Piante', en: 'Trees & Plants' }, percentage: 40, color: 'bg-emerald-600' },
+          { name: { it: 'Percorso Tattile', en: 'Tactile Path' }, percentage: 40, color: 'bg-amber-600' },
+          { name: { it: 'Panchine Accessibili', en: 'Accessible Benches' }, percentage: 20, color: 'bg-blue-500' }
+        ],
+        rewards: [
+          { id: 1, amount: 20, title: { it: 'Invito Inaugurazione', en: 'Inauguration Invite' } },
+          { id: 2, amount: 50, title: { it: 'Adotta un Albero', en: 'Adopt a Tree' } }
+        ]
+      },
+      {
+        id: 'bio-plastics',
+        title: {
+          it: 'Bioplastiche dagli Scarti delle Mense Universitarie',
+          en: 'Bio-plastics from University Canteen Waste'
+        },
+        category: { it: 'Tecnologia & Ricerca', en: 'Tech & Research' },
+        icon: ICONS.cpu,
+        tags: ['Economia Circolare', 'Biotecnologie'],
+        bannerImg: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1200&q=80',
+        shortDesc: {
+          it: 'Sviluppo di polimeri biodegradabili recuperando gli scarti organici delle mense del nostro campus.',
+          en: 'Development of biodegradable polymers by recovering organic waste from our campus canteens.'
+        },
+        fullDesc: {
+          it: 'Questo progetto di ricerca applicata punta a chiudere il ciclo dei rifiuti all\'interno del campus. Estraendo composti bioattivi dagli scarti alimentari delle mense, il nostro team svilupperà prototipi di packaging 100% compostabili, riducendo l\'impronta ecologica dell\'Ateneo.',
+          en: 'This applied research project aims to close the waste loop within the campus. By extracting bioactive compounds from canteen food waste, our team will develop 100% compostable packaging prototypes, significantly reducing the University\'s ecological footprint.'
+        },
+        goal: 25000,
+        raised: 6250,
+        backers: 45,
+        daysLeft: 30,
+        matchedFunding: true,
+        team: [
+          { name: 'Laboratorio di Chimica Verde', role: { it: 'Dottorandi e Assegnisti', en: 'PhD Students and Post-docs' } }
+        ],
+        budgetBreakdown: [
+          { name: { it: 'Reagenti di Laboratorio', en: 'Lab Reagents' }, percentage: 50, color: 'bg-purple-600' },
+          { name: { it: 'Borsa di Studio (6 mesi)', en: 'Research Grant (6mo)' }, percentage: 35, color: 'bg-blue-600' },
+          { name: { it: 'Test di Compostabilità', en: 'Compostability Tests' }, percentage: 15, color: 'bg-emerald-500' }
+        ],
+        rewards: [
+          { id: 1, amount: 25, title: { it: 'Report Scientifico', en: 'Scientific Report Preview' } },
+          { id: 2, amount: 100, title: { it: 'Menzione Pubblicazione', en: 'Mention in Publication' } }
+        ]
+      }
+    ];
+
+    // --- TEXT DICTIONARY ---
+    const T = {
+      nav: {
+        home: { it: 'Home', en: 'Home' },
+        explore: { it: 'Esplora Progetti', en: 'Explore Projects' },
+        howItWorks: { it: 'Come Funziona', en: 'How it Works' },
+        propose: { it: 'Proponi Idea', en: 'Propose Idea' },
+        faq: { it: 'FAQ', en: 'FAQ' },
+        privacy: { it: 'Privacy', en: 'Privacy' }
+      },
+      hero: {
+        badge: { it: 'Piattaforma Ufficiale Ateneo', en: 'Official University Platform' },
+        title: { it: 'Sostieni il Futuro del Nostro Campus', en: 'Support the Future of Our Campus' },
+        subtitle: { 
+          it: 'Dalla vita studentesca alla ricerca innovativa, fino all\'impatto sul quartiere. Scopri i progetti della nostra comunità universitaria e contribuisci a realizzarli.', 
+          en: 'From student life to innovative research and local community impact. Discover projects from our university community and help make them a reality.' 
+        },
+        btnExplore: { it: 'Scopri i Progetti', en: 'Discover Projects' },
+        btnPropose: { it: 'Candida un Progetto', en: 'Submit a Project' }
+      },
+      stats: {
+        raised: { it: 'Fondi Raccolti', en: 'Total Raised' },
+        projects: { it: 'Progetti Finanziati', en: 'Funded Projects' },
+        donors: { it: 'Donatori Attivi', en: 'Active Donors' },
+        transparency: { it: 'Trasparenza Fondi', en: 'Fund Transparency' }
+      },
+      explore: {
+        title: { it: 'Esplora le Iniziative', en: 'Explore Initiatives' },
+        filterAll: { it: 'Tutti', en: 'All' },
+        btnDetails: { it: 'Scopri di più', en: 'Learn More' },
+        btnDonate: { it: 'Sostieni', en: 'Support' }
+      },
+      projectDetail: {
+        verified: { it: 'Progetto Verificato dall\'Ateneo', en: 'University Verified Project' },
+        downloadB2B: { it: 'Kit Fiscale Aziende (PDF)', en: 'Corporate Tax Kit (PDF)' },
+        raisedStr: { it: 'Raccolti di', en: 'Raised of' },
+        donorsStr: { it: 'Sostenitori', en: 'Backers' },
+        daysLeftStr: { it: 'Giorni Rimasti', en: 'Days Left' },
+        quickDonate: { it: 'Donazione Rapida', en: 'Quick Donate' },
+        budgetTitle: { it: 'Trasparenza Costi (Budget Breakdown)', en: 'Cost Transparency (Budget Breakdown)' },
+        teamTitle: { it: 'Team Proponente', en: 'Proposing Team' },
+        rewardsTitle: { it: 'Scegli la tua Ricompensa', en: 'Choose your Reward' }
+      },
+      checkout: {
+        title: { it: 'Completa la tua Donazione', en: 'Complete your Donation' },
+        amount: { it: 'Importo Selezionato', en: 'Selected Amount' },
+        selectMethod: { it: 'Seleziona Metodo di Pagamento', en: 'Select Payment Method' },
+        methodGuest: { it: 'Wallet / Ospite', en: 'Wallet / Guest' },
+        methodGuestSub: { it: 'Apple/Google Pay, No Login', en: 'Apple/Google Pay, No Login' },
+        methodBank: { it: 'Bonifico Bancario', en: 'Bank Transfer' },
+        methodBankSub: { it: 'Metodo Tradizionale', en: 'Traditional Method' },
+        methodB2B: { it: 'Aziendale (CSR)', en: 'Corporate (CSR)' },
+        methodB2BSub: { it: 'Con Ricevuta Fiscale', en: 'With Tax Receipt' },
+        emailLabel: { it: 'Email per la ricevuta', en: 'Email for receipt' },
+        btnConfirmWallet: { it: 'Dona con 1-Click', en: 'Donate with 1-Click' },
+        bankInstructions: { it: 'Coordinate per il Bonifico Tradizionale:', en: 'Traditional Bank Transfer Details:' },
+        copyIban: { it: 'Copia IBAN', en: 'Copy IBAN' },
+        causalLabel: { it: 'Causale Obbligatoria:', en: 'Mandatory Payment Reason:' },
+        btnConfirmBank: { it: 'Ho effettuato il bonifico', en: 'I have completed the transfer' },
+        b2bInstructions: { it: 'Inserisci i dati aziendali per l\'emissione del certificato di deducibilità fiscale.', en: 'Enter corporate details for the issuance of the tax deductibility certificate.' },
+        companyName: { it: 'Ragione Sociale', en: 'Company Name' },
+        vatNumber: { it: 'Partita IVA / VAT', en: 'VAT Number' },
+        btnConfirmB2B: { it: 'Conferma Donazione Aziendale', en: 'Confirm Corporate Donation' }
+      },
+      success: {
+        title: { it: 'Grazie di Cuore!', en: 'Thank You So Much!' },
+        desc: { 
+          it: 'Il tuo contributo fa la differenza per la nostra comunità universitaria. Riceverai a breve un\'email con la ricevuta ufficiale.', 
+          en: 'Your contribution makes a difference for our university community. You will receive an email shortly with your official receipt.' 
+        },
+        shareBtn: { it: 'Condividi', en: 'Share' },
+        homeBtn: { it: 'Torna alla Home', en: 'Back to Home' }
+      },
+      faq: {
+        title: { it: 'Domande Frequenti', en: 'Frequently Asked Questions' },
+        q1: { it: 'Chi può donare sulla piattaforma?', en: 'Who can donate on the platform?' },
+        a1: { 
+          it: 'Chiunque! Studenti, cittadini, ex-alunni (Alumni) e aziende. Non è obbligatorio registrarsi, puoi usare il checkout ospite rapido.', 
+          en: 'Anyone! Students, citizens, Alumni, and companies. Registration is not mandatory, you can use our quick guest checkout.' 
+        },
+        q2: { it: 'Come funziona la deducibilità fiscale per le imprese?', en: 'How does corporate tax deductibility work?' },
+        a2: { 
+          it: 'Tutte le donazioni all\'Ateneo sono fiscalmente deducibili. Le aziende possono scaricare il "Corporate Tax Kit" da ogni progetto e ricevere regolare certificazione.', 
+          en: 'All donations to the University are tax-deductible. Companies can download the "Corporate Tax Kit" from any project and receive official certification.' 
+        },
+        q3: { it: 'Cosa succede se il progetto non raggiunge l\'obiettivo?', en: 'What happens if a project does not reach its goal?' },
+        a3: { 
+          it: 'Usiamo la formula "Tutto o Niente". Se il traguardo non viene raggiunto entro la scadenza, tutte le donazioni vengono integralmente rimborsate in automatico.', 
+          en: 'We use an "All or Nothing" model. If the goal is not met by the deadline, all donations are fully refunded automatically.' 
+        },
+        q4: { it: 'Posso donare tramite bonifico bancario tradizionale?', en: 'Can I donate via traditional bank transfer?' },
+        a4: { 
+          it: 'Certamente. Al momento del pagamento puoi selezionare "Bonifico Bancario". Ti forniremo un IBAN e una causale specifica da utilizzare dal tuo home banking.', 
+          en: 'Absolutely. At checkout, select "Bank Transfer". We will provide an IBAN and a specific payment reason to use from your home banking.' 
+        }
+      },
+      privacy: {
+        title: { it: 'Privacy & Trasparenza Fondi', en: 'Privacy & Fund Transparency' },
+        p1: { 
+          it: 'La tutela dei tuoi dati è per noi fondamentale (GDPR EU 2016/679). I dati inseriti durante il "Guest Checkout" (es. Email) vengono utilizzati ESCLUSIVAMENTE per inviarti la ricevuta della donazione e un (1) aggiornamento finale a progetto concluso. Non verrai iscritto a newsletter generiche senza il tuo esplicito consenso.',
+          en: 'Protecting your data is fundamental to us (GDPR EU 2016/679). Data entered during "Guest Checkout" (e.g. Email) is used EXCLUSIVELY to send your donation receipt and one (1) final update when the project concludes. You will not be subscribed to generic newsletters without explicit consent.'
+        },
+        p2: {
+          it: 'Trasparenza dei Fondi: Ogni progetto presenta un "Budget Breakdown" (Ripartizione dei Costi) vincolante. I fondi raccolti vengono versati su un conto dedicato dell\'Ateneo e sbloccati al team di progetto solo dietro presentazione di giustificativi di spesa approvati dall\'amministrazione universitaria. Questo garantisce che il 100% dei fondi sia usato esattamente come promesso.',
+          en: 'Fund Transparency: Every project features a binding "Budget Breakdown". Raised funds are deposited into a dedicated University account and released to the project team only upon submission of expense receipts approved by the university administration. This guarantees 100% of funds are used exactly as promised.'
+        }
+      },
+      howItWorks: {
+        title: { it: 'Come Funziona il Crowdfunding di Ateneo', en: 'How University Crowdfunding Works' },
+        steps: [
+          { 
+            title: { it: '1. Candidatura', en: '1. Proposal' }, 
+            desc: { it: 'Studenti, docenti o staff propongono un\'idea con impatto per il campus o la città.', en: 'Students, faculty, or staff propose an idea with impact for the campus or city.' }
+          },
+          { 
+            title: { it: '2. Verifica', en: '2. Verification' }, 
+            desc: { it: 'L\'Ateneo valuta la fattibilità economica e la trasparenza del budget.', en: 'The University evaluates economic feasibility and budget transparency.' }
+          },
+          { 
+            title: { it: '3. Raccolta', en: '3. Campaign' }, 
+            desc: { it: 'La community (cittadini, aziende, alumni) dona in modo sicuro per raggiungere il target.', en: 'The community (citizens, companies, alumni) donates securely to hit the target.' }
+          },
+          { 
+            title: { it: '4. Realizzazione', en: '4. Realization' }, 
+            desc: { it: 'A target raggiunto, i fondi vengono sbloccati. I donatori ricevono aggiornamenti e ricompense.', en: 'Upon hitting the target, funds are unlocked. Donors receive updates and rewards.' }
+          }
+        ]
+      },
+      propose: {
+        title: { it: 'Proponi la tua Iniziativa', en: 'Propose your Initiative' },
+        subtitle: { it: 'Hai un\'idea per migliorare il campus o la ricerca? Inizia da qui.', en: 'Have an idea to improve the campus or research? Start here.' },
+        step1: { it: 'Informazioni Generali', en: 'General Information' },
+        step2: { it: 'Piano Finanziario', en: 'Financial Plan' },
+        step3: { it: 'Invio', en: 'Submit' },
+        projTitle: { it: 'Titolo del Progetto', en: 'Project Title' },
+        budgetReq: { it: 'Budget Richiesto (€)', en: 'Requested Budget (€)' },
+        btnNext: { it: 'Avanti', en: 'Next' },
+        btnBack: { it: 'Indietro', en: 'Back' },
+        btnSubmit: { it: 'Invia Candidatura Ufficiale', en: 'Submit Official Proposal' }
+      }
+    };
+
+    // --- APPLICATION STATE ---
+    const state = {
+      view: 'home',
+      lang: 'it',
+      darkMode: false,
+      isMobileMenuOpen: false,
+      selectedProjectId: null,
+      exploreFilter: 'All',
+      donationAmount: 10,
+      checkoutMethod: 'guest',
+      proposeStep: 1,
+      proposeData: { title: '', budget: '' }
+    };
+
+    // --- STATE MUTATORS & HANDLERS ---
+    function setView(newView) {
+      state.view = newView;
+      state.isMobileMenuOpen = false;
+      window.scrollTo(0, 0);
+      renderApp();
+    }
+
+    function setLang(newLang) {
+      state.lang = newLang;
+      renderApp();
+    }
+
+    function toggleDarkMode() {
+      state.darkMode = !state.darkMode;
+      if (state.darkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      renderApp();
+    }
+
+    function toggleMobileMenu() {
+      state.isMobileMenuOpen = !state.isMobileMenuOpen;
+      renderHeader();
+    }
+
+    function openProjectDetail(id) {
+      state.selectedProjectId = id;
+      setView('project-detail');
+    }
+
+    function openCheckout(id, amount) {
+      if (id) state.selectedProjectId = id;
+      state.donationAmount = amount;
+      setView('checkout');
+    }
+
+    function setExploreFilter(filter) {
+      state.exploreFilter = filter;
+      renderMain();
+    }
+
+    function setCheckoutMethod(method) {
+      state.checkoutMethod = method;
+      renderMain();
+    }
+
+    function setProposeStep(step) {
+      state.proposeStep = step;
+      renderMain();
+    }
+
+    function updateProposeField(field, val) {
+      state.proposeData[field] = val;
+    }
+
+    function copyIban() {
+      const iban = 'IT99 U012 3401 0000 0001 2345 678';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(iban);
+      }
+    }
+
+    // --- RENDER HELPERS ---
+    function getNavLabel(v) {
+      if (v === 'how-it-works') return T.nav.howItWorks[state.lang];
+      return T.nav[v] ? T.nav[v][state.lang] : v;
+    }
+
+    function renderHeader() {
+      const navItems = ['home', 'explore', 'how-it-works', 'propose', 'faq', 'privacy'];
+      const desktopButtons = navItems.map(v => `
+        <button onclick="setView('${v}')" class="nav-btn ${state.view === v ? 'active' : ''}">
+          ${getNavLabel(v)}
+        </button>
+      `).join('');
+
+      const mobileDropdown = state.isMobileMenuOpen ? `
+        <div class="mobile-nav">
+          ${navItems.map(v => `
+            <button onclick="setView('${v}')" class="mobile-nav-btn ${state.view === v ? 'active' : ''}">
+              ${getNavLabel(v)}
+            </button>
+          `).join('')}
+        </div>
+      ` : '';
+
+      document.getElementById('header-root').innerHTML = `
+        <div class="container">
+          <div class="header-inner">
+            <div class="logo-group" onclick="setView('home')">
+              <div class="logo-box">
+                <span class="font-serif">U</span>
+              </div>
+              <div class="logo-text">
+                <span class="logo-title">Uni<span>Crowd</span></span>
+                <span class="logo-sub">${state.lang === 'it' ? 'Ateneo Iniziative' : 'University Initiatives'}</span>
+              </div>
+            </div>
+
+            <nav class="desktop-nav">
+              ${desktopButtons}
+            </nav>
+
+            <div class="header-controls">
+              <div class="lang-toggle">
+                <button onclick="setLang('it')" class="lang-btn ${state.lang === 'it' ? 'active' : ''}">IT</button>
+                <button onclick="setLang('en')" class="lang-btn ${state.lang === 'en' ? 'active' : ''}">EN</button>
+              </div>
+              <button onclick="toggleDarkMode()" class="theme-btn" aria-label="Toggle Theme">
+                ${state.darkMode ? ICONS.sun : ICONS.moon}
+              </button>
+              <button onclick="toggleMobileMenu()" class="mobile-menu-btn" aria-label="Menu">
+                ${state.isMobileMenuOpen ? ICONS.x : ICONS.menu}
+              </button>
+            </div>
+          </div>
+        </div>
+        ${mobileDropdown}
+      `;
+    }
+
+    function renderProjectCardHTML(p) {
+      const percent = Math.min(100, Math.round((p.raised / p.goal) * 100));
+      return `
+        <div class="project-card">
+          <div class="card-img-wrap">
+            <img src="${p.bannerImg}" alt="Banner" />
+            <div class="card-badge">
+              ${p.icon}
+              <span>${p.category[state.lang]}</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 onclick="openProjectDetail('${p.id}')" class="card-title">${p.title[state.lang]}</h3>
+            <p class="card-desc">${p.shortDesc[state.lang]}</p>
+            <div class="card-progress-area">
+              <div class="card-progress-labels">
+                <span class="card-raised">€ ${p.raised.toLocaleString()}</span>
+                <span class="card-percent">${percent}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: ${percent}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button onclick="openProjectDetail('${p.id}')" class="btn-card-outline">
+              ${T.explore.btnDetails[state.lang]}
+            </button>
+            <button onclick="openCheckout('${p.id}', 10)" class="btn-card-solid">
+              ${T.explore.btnDonate[state.lang]}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHomeView() {
+      return `
+        <div class="fade-in">
+          <section class="hero-section">
+            <div class="hero-bg-overlay"></div>
+            <div class="container hero-content">
+              <div class="hero-badge">
+                ${ICONS.award}
+                <span>${T.hero.badge[state.lang]}</span>
+              </div>
+              <h1 class="hero-title font-serif">${T.hero.title[state.lang]}</h1>
+              <p class="hero-subtitle">${T.hero.subtitle[state.lang]}</p>
+              <div class="hero-actions">
+                <button onclick="setView('explore')" class="btn-hero-primary">
+                  ${ICONS.search}
+                  <span>${T.hero.btnExplore[state.lang]}</span>
+                </button>
+                <button onclick="setView('propose')" class="btn-hero-secondary">
+                  ${ICONS.rocket}
+                  <span>${T.hero.btnPropose[state.lang]}</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="stats-section">
+            <div class="container">
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <span class="stat-value">€ 142k+</span>
+                  <span class="stat-label">${T.stats.raised[state.lang]}</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">18</span>
+                  <span class="stat-label">${T.stats.projects[state.lang]}</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">1.2k</span>
+                  <span class="stat-label">${T.stats.donors[state.lang]}</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value emerald">100%</span>
+                  <span class="stat-label">${T.stats.transparency[state.lang]}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-pad">
+            <div class="container">
+              <div class="section-header-row">
+                <h2 class="section-title font-serif">Trend sul Campus</h2>
+                <button onclick="setView('explore')" class="link-all">
+                  <span>Vedi Tutti</span>
+                  ${ICONS.arrowRight}
+                </button>
+              </div>
+              <div class="projects-grid cols-3">
+                ${PROJECTS_DATA.slice(0, 3).map(p => renderProjectCardHTML(p)).join('')}
+              </div>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function renderExploreView() {
+      const categories = ['All', 'Vita Studentesca', 'Sport Universitario', 'Impatto Locale', 'Tecnologia & Ricerca'];
+      const categoriesEN = ['All', 'Campus Life', 'University Sports', 'Local Community', 'Tech & Research'];
+
+      const filteredProjects = state.exploreFilter === 'All'
+        ? PROJECTS_DATA
+        : PROJECTS_DATA.filter(p => p.category.it === state.exploreFilter || p.category.en === state.exploreFilter);
+
+      const filterBtns = categories.map((cat, idx) => {
+        const label = state.lang === 'it' ? cat : categoriesEN[idx];
+        const filterVal = cat === 'All' ? 'All' : label;
+        const isActive = state.exploreFilter === filterVal;
+        return `
+          <button onclick="setExploreFilter('${filterVal.replace(/'/g, "\'")}')" class="filter-btn ${isActive ? 'active' : ''}">
+            ${label}
+          </button>
+        `;
+      }).join('');
+
+      return `
+        <div class="view-pad fade-in">
+          <div class="container">
+            <div class="explore-header">
+              <div>
+                <h1 class="section-title font-serif" style="margin-bottom:0.5rem">${T.explore.title[state.lang]}</h1>
+                <p style="color:var(--text-muted);font-size:0.875rem">Filtra per tematica e scopri le idee della nostra università.</p>
+              </div>
+              <div class="filter-list">
+                ${filterBtns}
+              </div>
+            </div>
+            <div class="projects-grid">
+              ${filteredProjects.map(p => renderProjectCardHTML(p)).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProjectDetailView() {
+      const project = PROJECTS_DATA.find(p => p.id === state.selectedProjectId) || PROJECTS_DATA[0];
+      const percent = Math.min(100, Math.round((project.raised / project.goal) * 100));
+
+      return `
+        <div class="view-pad fade-in">
+          <div class="container">
+            <button onclick="setView('explore')" class="back-btn">
+              ${ICONS.chevronLeft}
+              <span>${state.lang === 'it' ? 'Torna ai progetti' : 'Back to projects'}</span>
+            </button>
+
+            <div class="detail-grid">
+              <div>
+                <div class="detail-hero">
+                  <img src="${project.bannerImg}" alt="Project" />
+                  <div class="verified-pill">
+                    ${ICONS.shieldCheck}
+                    <span>${T.projectDetail.verified[state.lang]}</span>
+                  </div>
+                </div>
+
+                <div class="panel-card">
+                  <div class="tag-row">
+                    <span class="tag-chip">${project.category[state.lang]}</span>
+                    ${project.tags.map(t => `<span class="tag-chip">${t}</span>`).join('')}
+                  </div>
+
+                  <h1 class="detail-title font-serif">${project.title[state.lang]}</h1>
+                  <p class="detail-desc">${project.fullDesc[state.lang]}</p>
+
+                  <h3 class="sub-heading">
+                    ${ICONS.dollarSign}
+                    <span>${T.projectDetail.budgetTitle[state.lang]}</span>
+                  </h3>
+                  <div class="budget-box">
+                    <div class="budget-bar">
+                      ${project.budgetBreakdown.map(item => `
+                        <div class="${item.color}" style="width: ${item.percentage}%"></div>
+                      `).join('')}
+                    </div>
+                    <ul class="budget-legend">
+                      ${project.budgetBreakdown.map(item => `
+                        <li class="legend-item">
+                          <span class="legend-dot ${item.color}"></span>
+                          <span>${item.name[state.lang]} <span style="opacity:0.6;font-weight:400">(${item.percentage}%)</span></span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+
+                  <h3 class="sub-heading">
+                    <span style="color:var(--primary);display:flex">${ICONS.users}</span>
+                    <span>${T.projectDetail.teamTitle[state.lang]}</span>
+                  </h3>
+                  <div>
+                    ${project.team.map(t => `
+                      <div class="team-card">
+                        <div class="team-avatar">${ICONS.users}</div>
+                        <div>
+                          <p style="font-weight:700;font-size:0.875rem">${t.name}</p>
+                          <p style="font-size:0.75rem;color:var(--text-muted)">${t.role[state.lang]}</p>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+
+              <div class="sidebar-col">
+                <div class="status-card">
+                  <div style="margin-bottom:1.5rem">
+                    <div class="status-amount">€ ${project.raised.toLocaleString()}</div>
+                    <div style="font-size:0.875rem;color:var(--text-muted);font-weight:500">
+                      ${T.projectDetail.raisedStr[state.lang]} € ${project.goal.toLocaleString()}
+                    </div>
+                  </div>
+
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: ${percent}%"></div>
+                  </div>
+
+                  <div class="status-metrics">
+                    <div class="metric-col">
+                      <span class="metric-val">${project.backers}</span>
+                      <span class="metric-lbl">${T.projectDetail.donorsStr[state.lang]}</span>
+                    </div>
+                    <div class="metric-col">
+                      <span class="metric-val">${percent}%</span>
+                      <span class="metric-lbl">Target</span>
+                    </div>
+                    <div class="metric-col">
+                      <span class="metric-val">${project.daysLeft}</span>
+                      <span class="metric-lbl">${T.projectDetail.daysLeftStr[state.lang]}</span>
+                    </div>
+                  </div>
+
+                  <button onclick="openCheckout('${project.id}', 10)" class="btn-donate-main">
+                    ${T.explore.btnDonate[state.lang]}
+                  </button>
+
+                  <div style="text-align:center">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:0.5rem;text-transform:uppercase">
+                      ${T.projectDetail.quickDonate[state.lang]}
+                    </span>
+                    <div class="quick-donate-row">
+                      ${[5, 10, 25, 50].map(amt => `
+                        <button onclick="openCheckout('${project.id}', ${amt})" class="quick-amt-btn">€${amt}</button>
+                      `).join('')}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="b2b-box">
+                  <div>
+                    <h4 style="font-weight:700;font-size:0.875rem;color:var(--stat-num)">${T.projectDetail.downloadB2B[state.lang]}</h4>
+                    <p style="font-size:0.75rem;color:var(--text-muted)">PDF Report & ESG Info</p>
+                  </div>
+                  <div class="b2b-icon">${ICONS.download}</div>
+                </div>
+
+                <h3 style="font-size:1.125rem;font-weight:700;padding-top:0.5rem">${T.projectDetail.rewardsTitle[state.lang]}</h3>
+                <div style="display:flex;flex-direction:column;gap:0.85rem">
+                  ${project.rewards.map(r => `
+                    <button type="button" onclick="openCheckout('${project.id}', ${r.amount})" class="reward-card">
+                      <div class="reward-left">
+                        <div class="reward-price-badge">€ ${r.amount}</div>
+                        <div class="reward-info">
+                          <span class="reward-tier-label">${state.lang === 'it' ? 'Ricompensa Inclusa' : 'Reward Included'}</span>
+                          <h4 class="reward-title">${r.title[state.lang]}</h4>
+                        </div>
+                      </div>
+                      <div class="reward-cta">
+                        ${ICONS.arrowRight}
+                      </div>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCheckoutView() {
+      const project = PROJECTS_DATA.find(p => p.id === state.selectedProjectId) || PROJECTS_DATA[0];
+
+      let methodFormHTML = '';
+      if (state.checkoutMethod === 'guest') {
+        methodFormHTML = `
+          <div class="fade-in">
+            <div class="form-group">
+              <label class="form-label">${T.checkout.emailLabel[state.lang]} *</label>
+              <input type="email" class="form-input" placeholder="email@example.com" />
+            </div>
+            <button onclick="setView('success')" class="btn-submit-wallet">
+              ${ICONS.smartphone}
+              <span>${T.checkout.btnConfirmWallet[state.lang]}</span>
+            </button>
+          </div>
+        `;
+      } else if (state.checkoutMethod === 'bank') {
+        methodFormHTML = `
+          <div class="fade-in" style="background-color:var(--bg-subtle);padding:1.5rem;border-radius:1rem;border:1px solid var(--border-color)">
+            <p style="font-size:0.875rem;font-weight:600">${T.checkout.bankInstructions[state.lang]}</p>
+            <div class="iban-box">
+              <span class="font-mono" style="font-weight:700;font-size:0.875rem;letter-spacing:0.08em;color:var(--stat-num)">
+                IT99 U012 3401 0000 0001 2345 678
+              </span>
+              <button onclick="copyIban()" style="padding:0.5rem;border-radius:0.5rem;color:var(--text-muted)" title="${T.checkout.copyIban[state.lang]}">
+                ${ICONS.copy}
+              </button>
+            </div>
+            <div class="form-group">
+              <span class="form-label">${T.checkout.causalLabel[state.lang]}</span>
+              <span class="font-mono" style="font-size:0.875rem;display:block;padding:0.75rem;background-color:var(--bg-card);border:1px solid var(--border-color);border-radius:0.75rem">
+                DONAZIONE PROGETTO ${project.id.toUpperCase()}
+              </span>
+            </div>
+            <button onclick="setView('success')" class="btn-donate-main" style="margin-top:1rem;margin-bottom:0">
+              ${T.checkout.btnConfirmBank[state.lang]}
+            </button>
+          </div>
+        `;
+      } else if (state.checkoutMethod === 'b2b') {
+        methodFormHTML = `
+          <div class="fade-in">
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1rem">${T.checkout.b2bInstructions[state.lang]}</p>
+            <div class="form-group">
+              <label class="form-label">${T.checkout.companyName[state.lang]} *</label>
+              <input type="text" class="form-input" />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+              <div class="form-group">
+                <label class="form-label">${T.checkout.vatNumber[state.lang]} *</label>
+                <input type="text" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">PEC Email *</label>
+                <input type="email" class="form-input" />
+              </div>
+            </div>
+            <button onclick="setView('success')" class="btn-donate-main" style="background-color:var(--purple);margin-top:0.5rem;margin-bottom:0">
+              ${T.checkout.btnConfirmB2B[state.lang]}
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="view-pad fade-in">
+          <div class="container-sm">
+            <div class="panel-card" style="box-shadow:var(--shadow-xl)">
+              <button onclick="setView('project-detail')" class="back-btn">
+                ${ICONS.chevronLeft}
+                <span>Indietro</span>
+              </button>
+
+              <h1 class="font-serif" style="font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border-color)">
+                ${T.checkout.title[state.lang]}
+              </h1>
+
+              <div class="checkout-summary">
+                <div>
+                  <p style="font-size:0.75rem;color:var(--text-muted);font-weight:700;text-transform:uppercase">${project.title[state.lang]}</p>
+                  <p style="font-weight:700">${T.checkout.amount[state.lang]}</p>
+                </div>
+                <div style="font-size:1.875rem;font-weight:800;color:var(--stat-num)">€ ${state.donationAmount}</div>
+              </div>
+
+              <h3 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.75rem">
+                ${T.checkout.selectMethod[state.lang]}
+              </h3>
+
+              <div class="method-grid">
+                <button onclick="setCheckoutMethod('guest')" class="method-btn ${state.checkoutMethod === 'guest' ? 'active-guest' : ''}">
+                  <span style="color:var(--stat-num);margin-bottom:0.5rem;display:flex">${ICONS.smartphone}</span>
+                  <span style="font-weight:700;font-size:0.875rem">${T.checkout.methodGuest[state.lang]}</span>
+                  <span style="font-size:10px;color:var(--text-muted)">${T.checkout.methodGuestSub[state.lang]}</span>
+                </button>
+                <button onclick="setCheckoutMethod('bank')" class="method-btn ${state.checkoutMethod === 'bank' ? 'active-bank' : ''}">
+                  <span style="margin-bottom:0.5rem;display:flex">${ICONS.landmark}</span>
+                  <span style="font-weight:700;font-size:0.875rem">${T.checkout.methodBank[state.lang]}</span>
+                  <span style="font-size:10px;color:var(--text-muted)">${T.checkout.methodBankSub[state.lang]}</span>
+                </button>
+                <button onclick="setCheckoutMethod('b2b')" class="method-btn ${state.checkoutMethod === 'b2b' ? 'active-b2b' : ''}">
+                  <span style="margin-bottom:0.5rem;display:flex">${ICONS.building2}</span>
+                  <span style="font-weight:700;font-size:0.875rem">${T.checkout.methodB2B[state.lang]}</span>
+                  <span style="font-size:10px;color:var(--text-muted)">${T.checkout.methodB2BSub[state.lang]}</span>
+                </button>
+              </div>
+
+              ${methodFormHTML}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSuccessView() {
+      return `
+        <div class="view-pad fade-in" style="display:flex;justify-content:center;align-items:center">
+          <div style="max-width:28rem;width:100%;padding:0 1rem;text-align:center">
+            <div style="width:6rem;height:6rem;background-color:rgba(16, 185, 129, 0.15);color:var(--emerald);border-radius:9999px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+              ${ICONS.checkCircle}
+            </div>
+            <h1 class="font-serif" style="font-size:1.875rem;font-weight:800;margin-bottom:1rem">${T.success.title[state.lang]}</h1>
+            <p style="color:var(--text-muted);margin-bottom:2rem;line-height:1.65">${T.success.desc[state.lang]}</p>
+            <div style="display:flex;flex-direction:column;gap:0.75rem">
+              <button class="btn-donate-main" style="display:flex;justify-content:center;align-items:center;gap:0.5rem;margin-bottom:0">
+                ${ICONS.share2}
+                <span>${T.success.shareBtn[state.lang]}</span>
+              </button>
+              <button onclick="setView('home')" class="btn-card-outline" style="padding:1rem;font-size:0.95rem">
+                ${T.success.homeBtn[state.lang]}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHowItWorksView() {
+      return `
+        <div class="view-pad fade-in">
+          <div class="container-md">
+            <h1 class="section-title font-serif" style="text-align:center;margin-bottom:3rem">
+              ${T.howItWorks.title[state.lang]}
+            </h1>
+            <div class="steps-wrapper">
+              ${T.howItWorks.steps.map((step, idx) => `
+                <div class="step-card">
+                  <div class="step-num">${idx + 1}</div>
+                  <div style="padding-top:0.25rem">
+                    <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem">${step.title[state.lang]}</h3>
+                    <p style="color:var(--text-muted);line-height:1.65">${step.desc[state.lang]}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProposeView() {
+      let stepBody = '';
+      if (state.proposeStep === 1) {
+        stepBody = `
+          <div class="fade-in">
+            <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:1rem">${T.propose.step1[state.lang]}</h3>
+            <div class="form-group">
+              <label class="form-label">${T.propose.projTitle[state.lang]} *</label>
+              <input type="text" value="${state.proposeData.title}" oninput="updateProposeField('title', this.value)" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Categoria *</label>
+              <select class="form-input">
+                <option>Vita Studentesca</option>
+                <option>Sport Universitario</option>
+                <option>Ricerca</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else if (state.proposeStep === 2) {
+        stepBody = `
+          <div class="fade-in">
+            <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:1rem">${T.propose.step2[state.lang]}</h3>
+            <div class="form-group">
+              <label class="form-label">${T.propose.budgetReq[state.lang]} *</label>
+              <input type="number" value="${state.proposeData.budget}" oninput="updateProposeField('budget', this.value)" class="form-input" />
+            </div>
+            <div style="padding:1rem;background-color:rgba(59, 130, 246, 0.08);border-radius:0.75rem;border:1px solid var(--border-color);font-size:0.875rem;display:flex;align-items:flex-start;gap:0.75rem;margin-top:1rem">
+              ${ICONS.info}
+              <p style="color:var(--text-secondary)">
+                ${state.lang === 'it' ? 'I progetti approvati godono del co-finanziamento di Ateneo: raddoppiamo quanto raccogli!' : 'Approved projects enjoy University co-funding: we double what you raise!'}
+              </p>
+            </div>
+          </div>
+        `;
+      } else {
+        stepBody = `
+          <div class="fade-in" style="text-align:center;padding:1.5rem 0">
+            <div style="width:4rem;height:4rem;background-color:rgba(31, 87, 118, 0.12);color:var(--stat-num);border-radius:9999px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+              ${ICONS.checkCircle}
+            </div>
+            <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem">${T.propose.step3[state.lang]}</h3>
+            <p style="color:var(--text-muted);font-size:0.875rem;max-width:24rem;margin:0 auto">
+              ${state.lang === 'it' ? 'Il tuo progetto verrà analizzato dalla commissione universitaria entro 10 giorni lavorativi.' : 'Your project will be reviewed by the university committee within 10 business days.'}
+            </p>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="view-pad fade-in">
+          <div class="container-sm">
+            <div class="panel-card" style="box-shadow:var(--shadow-xl)">
+              <div style="text-align:center;margin-bottom:2rem">
+                <h1 class="font-serif" style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem">${T.propose.title[state.lang]}</h1>
+                <p style="color:var(--text-muted)">${T.propose.subtitle[state.lang]}</p>
+              </div>
+
+              <div class="stepper-bars">
+                ${[1, 2, 3].map(step => `
+                  <div class="stepper-bar ${state.proposeStep >= step ? 'active' : ''}"></div>
+                `).join('')}
+              </div>
+
+              <div style="min-height:220px">
+                ${stepBody}
+              </div>
+
+              <div style="display:flex;justify-content:space-between;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border-color)">
+                ${state.proposeStep > 1 ? `
+                  <button onclick="setProposeStep(${state.proposeStep - 1})" class="btn-card-outline" style="flex:0 0 auto;padding:0.65rem 1.5rem;font-size:0.875rem">
+                    ${T.propose.btnBack[state.lang]}
+                  </button>
+                ` : '<div></div>'}
+
+                ${state.proposeStep < 3 ? `
+                  <button onclick="setProposeStep(${state.proposeStep + 1})" class="btn-card-solid" style="flex:0 0 auto;padding:0.65rem 1.5rem;font-size:0.875rem">
+                    ${T.propose.btnNext[state.lang]}
+                  </button>
+                ` : `
+                  <button onclick="setView('home')" class="btn-card-solid" style="flex:0 0 auto;padding:0.65rem 1.5rem;font-size:0.875rem;background-color:var(--accent)">
+                    ${T.propose.btnSubmit[state.lang]}
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFAQView() {
+      return `
+        <div class="view-pad fade-in">
+          <div class="container-md">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:2.5rem;color:var(--stat-num)">
+              ${ICONS.helpCircle}
+              <h1 class="font-serif" style="font-size:1.875rem;font-weight:700">${T.faq.title[state.lang]}</h1>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:1.5rem">
+              ${[1, 2, 3, 4].map(num => `
+                <div class="panel-card">
+                  <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;color:var(--stat-num)">${T.faq['q' + num][state.lang]}</h3>
+                  <p style="color:var(--text-muted);line-height:1.65">${T.faq['a' + num][state.lang]}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPrivacyView() {
+      return `
+        <div class="view-pad fade-in">
+          <div class="container-md">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:2.5rem;color:var(--stat-num)">
+              ${ICONS.shieldCheckLg}
+              <h1 class="font-serif" style="font-size:1.875rem;font-weight:700">${T.privacy.title[state.lang]}</h1>
+            </div>
+            <div class="panel-card" style="display:flex;flex-direction:column;gap:2rem">
+              <section>
+                <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-color)">1. Data Protection & GDPR</h3>
+                <p style="color:var(--text-muted);line-height:1.65">${T.privacy.p1[state.lang]}</p>
+              </section>
+              <section>
+                <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-color)">2. Fund Transparency</h3>
+                <p style="color:var(--text-muted);line-height:1.65">${T.privacy.p2[state.lang]}</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFooter() {
+      document.getElementById('footer-root').innerHTML = `
+        <div class="container footer-grid">
+          <div>
+            <span class="font-serif" style="display:block;font-weight:700;color:#ffffff;font-size:1.25rem;margin-bottom:0.75rem">University Crowdfunding</span>
+            <p style="font-size:0.875rem;opacity:0.8;line-height:1.65;max-width:24rem">
+              ${state.lang === 'it' 
+                ? 'Piattaforma ufficiale di raccolta fondi per sostenere la ricerca, la vita studentesca e lo sviluppo del territorio.' 
+                : 'Official fundraising platform to support research, student life, and community development.'}
+            </p>
+          </div>
+          <div>
+            <h4 class="footer-heading">Navigazione</h4>
+            <ul class="footer-links">
+              <li><button onclick="setView('home')">${T.nav.home[state.lang]}</button></li>
+              <li><button onclick="setView('explore')">${T.nav.explore[state.lang]}</button></li>
+              <li><button onclick="setView('faq')">${T.nav.faq[state.lang]}</button></li>
+              <li><button onclick="setView('privacy')">${T.nav.privacy[state.lang]}</button></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="footer-heading">Supporto</h4>
+            <p style="font-size:0.875rem;opacity:0.8;margin-bottom:0.5rem">Email: info.crowd@university.edu</p>
+            <div style="font-size:0.75rem;opacity:0.6;margin-top:1.5rem">
+              <span>&copy; 2026 University Foundation</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMain() {
+      const mainEl = document.getElementById('main-root');
+      switch (state.view) {
+        case 'home': mainEl.innerHTML = renderHomeView(); break;
+        case 'explore': mainEl.innerHTML = renderExploreView(); break;
+        case 'project-detail': mainEl.innerHTML = renderProjectDetailView(); break;
+        case 'checkout': mainEl.innerHTML = renderCheckoutView(); break;
+        case 'success': mainEl.innerHTML = renderSuccessView(); break;
+        case 'how-it-works': mainEl.innerHTML = renderHowItWorksView(); break;
+        case 'propose': mainEl.innerHTML = renderProposeView(); break;
+        case 'faq': mainEl.innerHTML = renderFAQView(); break;
+        case 'privacy': mainEl.innerHTML = renderPrivacyView(); break;
+        default: mainEl.innerHTML = renderHomeView();
+      }
+    }
+
+    function renderApp() {
+      renderHeader();
+      renderMain();
+      renderFooter();
+    }
+
+    // Initialize Application
+    renderApp();
+  </script>
+</body>
+</html>
