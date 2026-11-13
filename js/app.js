@@ -137,7 +137,7 @@ function copyIban() {
       document.getElementById('header-root').innerHTML = `
         <div class="container">
           <div class="header-inner">
-            <div class="logo-group" onclick="setView('home')">
+            <div class="logo-group" role="button" tabindex="0" aria-label="Torna alla Home" onclick="setView('home')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setView('home');}" onkeypress="if(event.key==='Enter'||event.key===' '){event.preventDefault();setView('home');}">
               <div class="logo-box">
                 <span class="font-serif">U</span>
               </div>
@@ -174,14 +174,14 @@ function copyIban() {
       return `
         <div class="project-card">
           <div class="card-img-wrap">
-            <img src="${p.bannerImg}" alt="Banner" />
+            <img src="${p.bannerImg}" alt="${p.alt ? p.alt[state.lang] : p.title[state.lang]}" />
             <div class="card-badge">
               ${p.icon}
               <span>${p.category[state.lang]}</span>
             </div>
           </div>
           <div class="card-body">
-            <h3 onclick="openProjectDetail('${p.id}')" class="card-title">${p.title[state.lang]}</h3>
+            <h2 role="button" tabindex="0" onclick="openProjectDetail('${p.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProjectDetail('${p.id}');}" onkeypress="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProjectDetail('${p.id}');}" class="card-title">${p.title[state.lang]}</h2>
             <p class="card-desc">${p.shortDesc[state.lang]}</p>
             <div class="card-progress-area">
               <div class="card-progress-labels">
@@ -325,7 +325,7 @@ function copyIban() {
             <div class="detail-grid">
               <div>
                 <div class="detail-hero">
-                  <img src="${project.bannerImg}" alt="Project" />
+                  <img src="${project.bannerImg}" alt="${project.alt ? project.alt[state.lang] : project.title[state.lang]}" />
                   <div class="verified-pill">
                     ${ICONS.shieldCheck}
                     <span>${T.projectDetail.verified[state.lang]}</span>
@@ -341,10 +341,10 @@ function copyIban() {
                   <h1 class="detail-title font-serif">${project.title[state.lang]}</h1>
                   <p class="detail-desc">${project.fullDesc[state.lang]}</p>
 
-                  <h3 class="sub-heading">
+                  <h2 class="sub-heading">
                     ${ICONS.dollarSign}
                     <span>${T.projectDetail.budgetTitle[state.lang]}</span>
-                  </h3>
+                  </h2>
                   <div class="budget-box">
                     <div class="budget-bar">
                       ${project.budgetBreakdown.map(item => `
@@ -361,10 +361,10 @@ function copyIban() {
                     </ul>
                   </div>
 
-                  <h3 class="sub-heading">
+                  <h2 class="sub-heading">
                     <span style="color:var(--primary);display:flex">${ICONS.users}</span>
                     <span>${T.projectDetail.teamTitle[state.lang]}</span>
-                  </h3>
+                  </h2>
                   <div>
                     ${project.team.map(t => `
                       <div class="team-card">
@@ -425,13 +425,13 @@ function copyIban() {
 
                 <div class="b2b-box">
                   <div>
-                    <h4 style="font-weight:700;font-size:0.875rem;color:var(--stat-num)">${T.projectDetail.downloadB2B[state.lang]}</h4>
+                    <h2 style="font-weight:700;font-size:0.875rem;color:var(--stat-num)">${T.projectDetail.downloadB2B[state.lang]}</h2>
                     <p style="font-size:0.75rem;color:var(--text-muted)">PDF Report & ESG Info</p>
                   </div>
                   <div class="b2b-icon">${ICONS.download}</div>
                 </div>
 
-                <h3 style="font-size:1.125rem;font-weight:700;padding-top:0.5rem">${T.projectDetail.rewardsTitle[state.lang]}</h3>
+                <h2 style="font-size:1.125rem;font-weight:700;padding-top:0.5rem">${T.projectDetail.rewardsTitle[state.lang]}</h2>
                 <div style="display:flex;flex-direction:column;gap:0.85rem">
                   ${project.rewards.map(r => `
                     <button type="button" onclick="openCheckout('${project.id}', ${r.amount})" class="reward-card">
@@ -439,7 +439,7 @@ function copyIban() {
                         <div class="reward-price-badge">€ ${r.amount}</div>
                         <div class="reward-info">
                           <span class="reward-tier-label">${state.lang === 'it' ? 'Ricompensa Inclusa' : 'Reward Included'}</span>
-                          <h4 class="reward-title">${r.title[state.lang]}</h4>
+                          <h3 class="reward-title">${r.title[state.lang]}</h3>
                         </div>
                       </div>
                       <div class="reward-cta">
@@ -461,16 +461,16 @@ function copyIban() {
       let methodFormHTML = '';
       if (state.checkoutMethod === 'guest') {
         methodFormHTML = `
-          <div class="fade-in">
+          <form class="fade-in" onsubmit="event.preventDefault();setView('success');">
             <div class="form-group">
-              <label class="form-label">${T.checkout.emailLabel[state.lang]} *</label>
-              <input type="email" class="form-input" placeholder="email@example.com" />
+              <label for="checkout-email" class="form-label">${T.checkout.emailLabel[state.lang]} *</label>
+              <input id="checkout-email" type="email" class="form-input" placeholder="email@example.com" />
             </div>
-            <button onclick="setView('success')" class="btn-submit-wallet">
+            <button type="button" onclick="setView('success')" class="btn-submit-wallet">
               ${ICONS.smartphone}
               <span>${T.checkout.btnConfirmWallet[state.lang]}</span>
             </button>
-          </div>
+          </form>
         `;
       } else if (state.checkoutMethod === 'bank') {
         methodFormHTML = `
@@ -480,7 +480,7 @@ function copyIban() {
               <span class="font-mono" style="font-weight:700;font-size:0.875rem;letter-spacing:0.08em;color:var(--stat-num)">
                 IT99 U012 3401 0000 0001 2345 678
               </span>
-              <button onclick="copyIban()" style="padding:0.5rem;border-radius:0.5rem;color:var(--text-muted)" title="${T.checkout.copyIban[state.lang]}">
+              <button type="button" onclick="copyIban()" style="padding:0.5rem;border-radius:0.5rem;color:var(--text-muted)" title="${T.checkout.copyIban[state.lang]}" aria-label="${T.checkout.copyIban[state.lang]}">
                 ${ICONS.copy}
               </button>
             </div>
@@ -490,33 +490,33 @@ function copyIban() {
                 DONAZIONE PROGETTO ${project.id.toUpperCase()}
               </span>
             </div>
-            <button onclick="setView('success')" class="btn-donate-main" style="margin-top:1rem;margin-bottom:0">
+            <button type="button" onclick="setView('success')" class="btn-donate-main" style="margin-top:1rem;margin-bottom:0">
               ${T.checkout.btnConfirmBank[state.lang]}
             </button>
           </div>
         `;
       } else if (state.checkoutMethod === 'b2b') {
         methodFormHTML = `
-          <div class="fade-in">
+          <form class="fade-in" onsubmit="event.preventDefault();setView('success');">
             <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1rem">${T.checkout.b2bInstructions[state.lang]}</p>
             <div class="form-group">
-              <label class="form-label">${T.checkout.companyName[state.lang]} *</label>
-              <input type="text" class="form-input" />
+              <label for="company-name" class="form-label">${T.checkout.companyName[state.lang]} *</label>
+              <input id="company-name" type="text" class="form-input" />
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
               <div class="form-group">
-                <label class="form-label">${T.checkout.vatNumber[state.lang]} *</label>
-                <input type="text" class="form-input" />
+                <label for="vat-number" class="form-label">${T.checkout.vatNumber[state.lang]} *</label>
+                <input id="vat-number" type="text" class="form-input" />
               </div>
               <div class="form-group">
-                <label class="form-label">PEC Email *</label>
-                <input type="email" class="form-input" />
+                <label for="pec-email" class="form-label">PEC Email *</label>
+                <input id="pec-email" type="email" class="form-input" />
               </div>
             </div>
-            <button onclick="setView('success')" class="btn-donate-main" style="background-color:var(--purple);margin-top:0.5rem;margin-bottom:0">
+            <button type="button" onclick="setView('success')" class="btn-donate-main" style="background-color:var(--purple);margin-top:0.5rem;margin-bottom:0">
               ${T.checkout.btnConfirmB2B[state.lang]}
             </button>
-          </div>
+          </form>
         `;
       }
 
@@ -541,25 +541,25 @@ function copyIban() {
                 <div style="font-size:1.875rem;font-weight:800;color:var(--stat-num)">€ ${state.donationAmount}</div>
               </div>
 
-              <h3 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.75rem">
+              <h2 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.75rem">
                 ${T.checkout.selectMethod[state.lang]}
-              </h3>
+              </h2>
 
               <div class="method-grid">
                 <button onclick="setCheckoutMethod('guest')" class="method-btn ${state.checkoutMethod === 'guest' ? 'active-guest' : ''}">
                   <span style="color:var(--stat-num);margin-bottom:0.5rem;display:flex">${ICONS.smartphone}</span>
                   <span style="font-weight:700;font-size:0.875rem">${T.checkout.methodGuest[state.lang]}</span>
-                  <span style="font-size:10px;color:var(--text-muted)">${T.checkout.methodGuestSub[state.lang]}</span>
+                  <span style="font-size:0.75rem;color:var(--text-muted)">${T.checkout.methodGuestSub[state.lang]}</span>
                 </button>
                 <button onclick="setCheckoutMethod('bank')" class="method-btn ${state.checkoutMethod === 'bank' ? 'active-bank' : ''}">
                   <span style="margin-bottom:0.5rem;display:flex">${ICONS.landmark}</span>
                   <span style="font-weight:700;font-size:0.875rem">${T.checkout.methodBank[state.lang]}</span>
-                  <span style="font-size:10px;color:var(--text-muted)">${T.checkout.methodBankSub[state.lang]}</span>
+                  <span style="font-size:0.75rem;color:var(--text-muted)">${T.checkout.methodBankSub[state.lang]}</span>
                 </button>
                 <button onclick="setCheckoutMethod('b2b')" class="method-btn ${state.checkoutMethod === 'b2b' ? 'active-b2b' : ''}">
                   <span style="margin-bottom:0.5rem;display:flex">${ICONS.building2}</span>
                   <span style="font-weight:700;font-size:0.875rem">${T.checkout.methodB2B[state.lang]}</span>
-                  <span style="font-size:10px;color:var(--text-muted)">${T.checkout.methodB2BSub[state.lang]}</span>
+                  <span style="font-size:0.75rem;color:var(--text-muted)">${T.checkout.methodB2BSub[state.lang]}</span>
                 </button>
               </div>
 
@@ -605,7 +605,7 @@ function copyIban() {
                 <div class="step-card">
                   <div class="step-num">${idx + 1}</div>
                   <div style="padding-top:0.25rem">
-                    <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem">${step.title[state.lang]}</h3>
+                    <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem">${step.title[state.lang]}</h2>
                     <p style="color:var(--text-muted);line-height:1.65">${step.desc[state.lang]}</p>
                   </div>
                 </div>
@@ -620,29 +620,29 @@ function copyIban() {
       let stepBody = '';
       if (state.proposeStep === 1) {
         stepBody = `
-          <div class="fade-in">
-            <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:1rem">${T.propose.step1[state.lang]}</h3>
+          <form class="fade-in" onsubmit="event.preventDefault();">
+            <h2 style="font-size:1.125rem;font-weight:700;margin-bottom:1rem">${T.propose.step1[state.lang]}</h2>
             <div class="form-group">
-              <label class="form-label">${T.propose.projTitle[state.lang]} *</label>
-              <input type="text" value="${state.proposeData.title}" oninput="updateProposeField('title', this.value)" class="form-input" />
+              <label for="propose-title" class="form-label">${T.propose.projTitle[state.lang]} *</label>
+              <input id="propose-title" type="text" value="${state.proposeData.title}" oninput="updateProposeField('title', this.value)" class="form-input" />
             </div>
             <div class="form-group">
-              <label class="form-label">Categoria *</label>
-              <select class="form-input">
+              <label for="propose-category" class="form-label">Categoria *</label>
+              <select id="propose-category" class="form-input">
                 <option>Vita Studentesca</option>
                 <option>Sport Universitario</option>
                 <option>Ricerca</option>
               </select>
             </div>
-          </div>
+          </form>
         `;
       } else if (state.proposeStep === 2) {
         stepBody = `
-          <div class="fade-in">
-            <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:1rem">${T.propose.step2[state.lang]}</h3>
+          <form class="fade-in" onsubmit="event.preventDefault();">
+            <h2 style="font-size:1.125rem;font-weight:700;margin-bottom:1rem">${T.propose.step2[state.lang]}</h2>
             <div class="form-group">
-              <label class="form-label">${T.propose.budgetReq[state.lang]} *</label>
-              <input type="number" value="${state.proposeData.budget}" oninput="updateProposeField('budget', this.value)" class="form-input" />
+              <label for="propose-budget" class="form-label">${T.propose.budgetReq[state.lang]} *</label>
+              <input id="propose-budget" type="number" value="${state.proposeData.budget}" oninput="updateProposeField('budget', this.value)" class="form-input" />
             </div>
             <div style="padding:1rem;background-color:rgba(59, 130, 246, 0.08);border-radius:0.75rem;border:1px solid var(--border-color);font-size:0.875rem;display:flex;align-items:flex-start;gap:0.75rem;margin-top:1rem">
               ${ICONS.info}
@@ -650,7 +650,7 @@ function copyIban() {
                 ${state.lang === 'it' ? 'I progetti approvati godono del co-finanziamento di Ateneo: raddoppiamo quanto raccogli!' : 'Approved projects enjoy University co-funding: we double what you raise!'}
               </p>
             </div>
-          </div>
+          </form>
         `;
       } else {
         stepBody = `
@@ -658,7 +658,7 @@ function copyIban() {
             <div style="width:4rem;height:4rem;background-color:rgba(31, 87, 118, 0.12);color:var(--stat-num);border-radius:9999px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
               ${ICONS.checkCircle}
             </div>
-            <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem">${T.propose.step3[state.lang]}</h3>
+            <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem">${T.propose.step3[state.lang]}</h2>
             <p style="color:var(--text-muted);font-size:0.875rem;max-width:24rem;margin:0 auto">
               ${state.lang === 'it' ? 'Il tuo progetto verrà analizzato dalla commissione universitaria entro 10 giorni lavorativi.' : 'Your project will be reviewed by the university committee within 10 business days.'}
             </p>
@@ -719,7 +719,7 @@ function copyIban() {
             <div style="display:flex;flex-direction:column;gap:1.5rem">
               ${[1, 2, 3, 4].map(num => `
                 <div class="panel-card">
-                  <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;color:var(--stat-num)">${T.faq['q' + num][state.lang]}</h3>
+                  <h2 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;color:var(--stat-num)">${T.faq['q' + num][state.lang]}</h2>
                   <p style="color:var(--text-muted);line-height:1.65">${T.faq['a' + num][state.lang]}</p>
                 </div>
               `).join('')}
@@ -739,11 +739,11 @@ function copyIban() {
             </div>
             <div class="panel-card" style="display:flex;flex-direction:column;gap:2rem">
               <section>
-                <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-color)">1. Data Protection & GDPR</h3>
+                <h2 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-color)">1. Data Protection & GDPR</h2>
                 <p style="color:var(--text-muted);line-height:1.65">${T.privacy.p1[state.lang]}</p>
               </section>
               <section>
-                <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-color)">2. Fund Transparency</h3>
+                <h2 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-color)">2. Fund Transparency</h2>
                 <p style="color:var(--text-muted);line-height:1.65">${T.privacy.p2[state.lang]}</p>
               </section>
             </div>
@@ -764,7 +764,7 @@ function copyIban() {
             </p>
           </div>
           <div>
-            <h4 class="footer-heading">Navigazione</h4>
+            <h2 class="footer-heading">Navigazione</h2>
             <ul class="footer-links">
               <li><button onclick="setView('home')">${T.nav.home[state.lang]}</button></li>
               <li><button onclick="setView('explore')">${T.nav.explore[state.lang]}</button></li>
@@ -773,7 +773,7 @@ function copyIban() {
             </ul>
           </div>
           <div>
-            <h4 class="footer-heading">Supporto</h4>
+            <h2 class="footer-heading">Supporto</h2>
             <p style="font-size:0.875rem;opacity:0.8;margin-bottom:0.5rem">Email: info.crowd@university.edu</p>
             <div style="font-size:0.75rem;opacity:0.6;margin-top:1.5rem">
               <span>&copy; 2026 University Foundation</span>
